@@ -1,156 +1,340 @@
-# Sistema Automatizado de Compra de Vale Refeição (VR)
+# 🍽️ Sistema de Automação VR
 
-## Descrição
+**Sistema desenvolvido para automatizar o processo de compra de VR, garantindo precisão, eficiência e conformidade com as regras estabelecidas.**
 
-Este sistema automatiza o processo mensal de compra de VR (Vale Refeição), garantindo que cada colaborador receba o valor correto, considerando ausências, férias, datas de admissão/desligamento e calendário de feriados.
+## 📋 Índice
 
-## Funcionalidades Implementadas
+- [Visão Geral](#-visão-geral)
+- [Requisitos do Sistema](#-requisitos-do-sistema)
+- [Instalação](#-instalação)
+- [Configuração do Ambiente](#-configuração-do-ambiente)
+- [Estrutura de Dados](#-estrutura-de-dados)
+- [Como Usar](#-como-usar)
+- [Funcionalidades](#-funcionalidades)
+- [Validações Implementadas](#-validações-implementadas)
+- [Arquivos de Saída](#-arquivos-de-saída)
+- [Solução de Problemas](#-solução-de-problemas)
+- [Manutenção](#-manutenção)
+- [Suporte](#-suporte)
 
-### ✅ Processamento de Dados
-- **Consolidação de bases**: Unifica informações de 5 planilhas separadas (Ativos, Férias, Desligados, Admissões, Sindicatos)
-- **Tratamento de exclusões**: Remove automaticamente diretores, estagiários, aprendizes, afastados e colaboradores no exterior
-- **Validação de dados**: Corrige datas inconsistentes e campos faltantes
+## 🎯 Visão Geral
 
-### ✅ Cálculos Automatizados
-- **Dias úteis por colaborador**: Considera sindicatos, férias, afastamentos e desligamentos
-- **Regras de desligamento**: Aplicação proporcional baseada na data de comunicação (antes/depois do dia 15)
-- **Valores por sindicato**: Cálculo correto baseado nas convenções coletivas
-- **Distribuição de custos**: 80% empresa, 20% colaborador
+Este sistema automatiza completamente o processo de cálculo e geração de planilhas de Vale Refeição (VR) mensal, processando dados de colaboradores ativos, desligados e aplicando todas as regras de negócio necessárias.
 
-### ✅ Saída Final
-- **Planilha formatada**: Gera arquivo Excel no formato especificado
-- **Validações**: Implementa todas as verificações necessárias
-- **Relatórios**: Estatísticas detalhadas do processamento
+### Principais Benefícios:
+- ✅ **Automação Completa**: Elimina processamento manual
+- ✅ **Precisão**: Aplicação automática de todas as regras de negócio
+- ✅ **Eficiência**: Processamento de milhares de registros em segundos
+- ✅ **Conformidade**: Validações automáticas conforme especificações
+- ✅ **Auditoria**: Relatórios detalhados de processamento
 
-## 📁 Arquivos do Sistema
+## 💻 Requisitos do Sistema
 
-### Scripts Principais
-- `sistema_vr.py` - Sistema principal de processamento de VR
-- `validar_resultado.py` - Script de validação dos resultados
-- `analisar_estrutura.py` - Análise da estrutura dos arquivos Excel
-- `relatorio_validacoes.py` - Relatório das validações implementadas
-- `verificar_abas.py` - Verificação de abas das planilhas
-- `verificar_validacoes.py` - Verificação das validações da aba "Validações"
+### Software Necessário:
+- **Python**: Versão 3.7 ou superior
+- **Sistema Operacional**: Windows 10/11, macOS, ou Linux
+- **Memória RAM**: Mínimo 4GB (recomendado 8GB)
+- **Espaço em Disco**: 500MB livres
 
-### Configuração
-- `requirements.txt` - Dependências Python necessárias
-- `.gitignore` - Arquivos excluídos do controle de versão
-
-### Estrutura de Dados Esperada
-O sistema espera uma pasta com os seguintes arquivos Excel:
-- `ADMISSÃO ABRIL.xlsx` - Colaboradores admitidos em abril
-- `AFASTAMENTOS.xlsx` - Lista de afastados/licenças
-- `APRENDIZ.xlsx` - Lista de aprendizes (excluídos)
-- `ESTÁGIO.xlsx` - Lista de estagiários (excluídos)
-- `EXTERIOR.xlsx` - Colaboradores no exterior (excluídos)
-- `DESLIGADOS.xlsx` - Lista de desligamentos
-- `FÉRIAS.xlsx` - Colaboradores em férias
-- `Base dias uteis.xlsx` - Dias úteis por sindicato
-- `Base sindicato x valor.xlsx` - Valores de VR por sindicato
-- `VR MENSAL 05.2025.xlsx` - Modelo da planilha final
-
-### Dados de Saída
-- `VR_MENSAL_GERADO.xlsx` - Planilha final gerada pelo sistema
-
-## 🚀 Como Usar
-
-### 1. Clonagem do Repositório
+### Verificar Versão do Python:
 ```bash
-git clone https://github.com/seu-usuario/sistema-vr-automatizado.git
+python --version
+# ou
+python3 --version
+```
+
+### Instalar Python (se necessário):
+- **Windows**: Baixe de [python.org](https://www.python.org/downloads/)
+- **macOS**: `brew install python3` ou baixe de [python.org](https://www.python.org/downloads/)
+- **Linux**: `sudo apt install python3 python3-pip` (Ubuntu/Debian)
+
+## 🔧 Instalação
+
+### 1. Clonar o Repositório
+```bash
+git clone https://github.com/CamilaFreitasX/sistema-vr-automatizado.git
 cd sistema-vr-automatizado
 ```
 
-### 2. Instalação das Dependências
+### 2. Criar Ambiente Virtual (Recomendado)
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Instalar Dependências
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configuração dos Dados
-- Crie uma pasta chamada "Desafio 4 - Dados" (ou ajuste o caminho no código)
-- Coloque todos os arquivos Excel necessários nesta pasta
-- Certifique-se de que os nomes dos arquivos correspondem aos esperados pelo sistema
+### 4. Verificar Instalação
+```bash
+python -c "import pandas, openpyxl; print('Instalação OK!')"
+```
 
-### 4. Execução do Sistema
+## ⚙️ Configuração do Ambiente
+
+### Estrutura de Pastas Obrigatória:
+```
+sistema-vr-automatizado/
+├── dados/                          # Pasta para planilhas de entrada
+│   ├── VR MENSAL 05.2025.xlsx     # Planilha principal com validações
+│   ├── COLABORADORES ATIVOS 05.2025.xlsx
+│   └── DESLIGADOS 05.2025.xlsx
+├── sistema_vr.py                   # Sistema principal
+├── validar_resultado.py            # Validação automática
+├── requirements.txt                # Dependências
+└── README.md                       # Este arquivo
+```
+
+### Criar Pasta de Dados:
+```bash
+# Windows
+mkdir dados
+
+# macOS/Linux
+mkdir dados
+```
+
+## 📊 Estrutura de Dados
+
+### Planilhas de Entrada Necessárias:
+
+#### 1. `VR MENSAL 05.2025.xlsx`
+- **Aba "Validações"**: Contém as 14 regras de validação
+- **Formato**: Preservado automaticamente no arquivo de saída
+
+#### 2. `COLABORADORES ATIVOS 05.2025.xlsx`
+**Colunas obrigatórias:**
+- `Matricula`: Número único do colaborador
+- `Nome`: Nome completo
+- `Admissão`: Data de admissão (formato: DD/MM/AAAA)
+- `Sindicato do Colaborador`: Nome do sindicato
+- `Situação`: Status do colaborador
+- `Férias Início`: Data início férias (se aplicável)
+- `Férias Fim`: Data fim férias (se aplicável)
+
+#### 3. `DESLIGADOS 05.2025.xlsx`
+**Colunas obrigatórias:**
+- `Matricula`: Número único do colaborador
+- `Nome`: Nome completo
+- `Demissão`: Data de demissão (formato: DD/MM/AAAA)
+- `Sindicato do Colaborador`: Nome do sindicato
+
+### Valores de VR por Sindicato:
+```python
+# Configuração atual no sistema
+VALORES_VR = {
+    'SINDICATO DOS METALÚRGICOS': 26.00,
+    'SINDICATO DOS QUÍMICOS': 26.00,
+    'SINDICATO DOS COMERCIÁRIOS': 22.00,
+    'SINDICATO DOS VIGILANTES': 22.00,
+    'SINDICATO DOS RODOVIÁRIOS': 22.00
+}
+```
+
+## 🚀 Como Usar
+
+### 1. Preparar os Dados
+1. Coloque as 3 planilhas Excel na pasta `dados/`
+2. Verifique se os nomes dos arquivos estão corretos
+3. Confirme que todas as colunas obrigatórias estão presentes
+
+### 2. Executar o Sistema
 ```bash
 python sistema_vr.py
 ```
 
-### 5. Validação dos Resultados
+### 3. Acompanhar o Processamento
+O sistema exibirá:
+```
+=== SISTEMA DE AUTOMAÇÃO VR ===
+Carregando dados...
+Processando colaboradores ativos...
+Processando desligados...
+Aplicando regras de negócio...
+Calculando valores...
+Gerando planilha final...
+
+=== RESUMO FINANCEIRO ===
+Total de colaboradores processados: 1,792
+Total VR: R$ 1,478,400.00
+Custo empresa (80%): R$ 1,182,720.00
+Desconto colaborador (20%): R$ 295,680.00
+
+✅ Planilha gerada: VR_MENSAL_GERADO.xlsx
+```
+
+### 4. Validar Resultados (Opcional)
 ```bash
 python validar_resultado.py
 ```
 
-### 6. Análise de Estruturas (Opcional)
+### 5. Verificar Arquivo de Saída
+O arquivo `VR_MENSAL_GERADO.xlsx` será criado com:
+- Dados processados na aba principal
+- Aba "Validações" preservada
+- Formatação adequada para uso
+
+## 🔧 Funcionalidades
+
+### Processamento Automático:
+- ✅ **Leitura de múltiplas planilhas Excel**
+- ✅ **Cálculo de dias úteis por mês**
+- ✅ **Aplicação de regras de sindicatos**
+- ✅ **Processamento de férias e afastamentos**
+- ✅ **Regras específicas para desligamentos**
+- ✅ **Cálculo de custos (80% empresa / 20% colaborador)**
+- ✅ **Geração de planilha final formatada**
+
+### Regras de Negócio Implementadas:
+
+#### Exclusões Automáticas:
+- Colaboradores afastados/licenças
+- Estagiários e aprendizes
+- Colaboradores no exterior
+- Situações específicas conforme validações
+
+#### Regras de Desligamento:
+- **Até dia 15**: Exclusão completa
+- **Após dia 15**: Recarga completa com desconto proporcional
+
+#### Cálculo de Férias:
+- Desconto proporcional aos dias de férias no mês
+- Manutenção do colaborador na planilha
+
+## ✅ Validações Implementadas
+
+O sistema implementa automaticamente as 14 validações da aba "Validações":
+
+1. **Afastados / Licenças**: Exclusão automática
+2. **DESLIGADOS GERAL**: Processamento com regras específicas
+3. **Admitidos mês**: Inclusão de novos colaboradores
+4. **Férias**: Cálculo proporcional
+5. **ESTAGIARIO**: Exclusão automática
+6. **APRENDIZ**: Exclusão automática
+7. **SINDICATOS x VALOR**: Aplicação de valores por sindicato
+8. **DESLIGADOS ATÉ O DIA 15**: Exclusão completa
+9. **DESLIGADOS DO DIA 16 ATÉ ULTIMO DIA**: Recarga com desconto
+10. **ATENDIMENTOS/OBS**: Campo 'OBS GERAL' incluído
+11. **Admitidos mês anterior**: Processamento e inclusão
+12. **EXTERIOR**: Exclusão automática
+13. **ATIVOS**: Processamento padrão
+14. **REVISAR CÁLCULO**: Validação automática com 17 verificações
+
+## 📄 Arquivos de Saída
+
+### `VR_MENSAL_GERADO.xlsx`
+**Colunas geradas:**
+- `Matricula`: Número do colaborador
+- `Admissão`: Data de admissão
+- `Sindicato do Colaborador`: Sindicato
+- `Competência`: Mês/ano de referência
+- `Dias`: Dias úteis calculados
+- `VALOR DIÁRIO VR`: Valor por dia
+- `TOTAL`: Valor total do VR
+- `Custo empresa`: 80% do valor total
+- `Desconto profissional`: 20% do valor total
+- `OBS GERAL`: Observações (férias, desligamentos, etc.)
+
+### Aba "Validações"
+- Preservada automaticamente do arquivo original
+- Mantém todas as 14 validações
+- Formatação original preservada
+
+## 🔍 Solução de Problemas
+
+### Erro: "Arquivo não encontrado"
 ```bash
+# Verificar se os arquivos estão na pasta correta
+ls dados/  # macOS/Linux
+dir dados\  # Windows
+```
+
+### Erro: "Módulo não encontrado"
+```bash
+# Reinstalar dependências
+pip install -r requirements.txt
+```
+
+### Erro: "Permissão negada"
+- Feche o arquivo Excel se estiver aberto
+- Verifique permissões da pasta
+- Execute como administrador se necessário
+
+### Dados Inconsistentes:
+```bash
+# Verificar estrutura das planilhas
+python verificar_abas.py
+
+# Analisar dados detalhadamente
 python analisar_estrutura.py
 ```
 
-## Resultados do Processamento
+### Performance Lenta:
+- Verifique disponibilidade de RAM
+- Feche outros programas
+- Use SSD se disponível
 
-### Estatísticas da Última Execução
-- **Total de colaboradores processados**: 1.792
-- **Valor total VR**: R$ 1.478.400,00
-- **Custo empresa (80%)**: R$ 1.182.720,00
-- **Desconto colaboradores (20%)**: R$ 295.680,00
+## 🔄 Manutenção
 
-### Distribuição por Sindicato
-1. **SINDPPD RS**: 1.134 colaboradores
-2. **SINDPD SP**: 418 colaboradores
-3. **SITEPD PR**: 139 colaboradores
-4. **SINDPD RJ**: 101 colaboradores
+### Atualizar Valores de VR:
+Edite o arquivo `sistema_vr.py`, seção `VALORES_VR`:
+```python
+VALORES_VR = {
+    'SINDICATO DOS METALÚRGICOS': 28.00,  # Novo valor
+    'SINDICATO DOS QUÍMICOS': 28.00,      # Novo valor
+    # ... outros sindicatos
+}
+```
 
-### Exclusões Aplicadas
-- **Aprendizes**: 33 matrículas
-- **Estagiários**: 27 matrículas
-- **Afastados**: 20 matrículas
-- **Exterior**: 4 matrículas
-- **Total excluído**: 84 matrículas
+### Adicionar Novo Sindicato:
+```python
+VALORES_VR = {
+    # ... sindicatos existentes
+    'NOVO SINDICATO': 25.00  # Adicionar aqui
+}
+```
 
-## Validações Implementadas
+### Backup dos Dados:
+```bash
+# Criar backup antes de processar
+cp -r dados/ backup_dados_$(date +%Y%m%d)/  # macOS/Linux
+robocopy dados backup_dados_%date:~-4,4%%date:~-10,2%%date:~-7,2% /E  # Windows
+```
 
-### ✅ Estrutura da Planilha
-- Todas as colunas obrigatórias presentes
-- Dados consistentes e sem duplicatas
-- Campos críticos sem valores nulos
+### Logs de Execução:
+O sistema gera logs automáticos durante a execução. Para debug detalhado, edite `sistema_vr.py` e descomente as linhas de debug.
 
-### ✅ Cálculos
-- TOTAL = Dias × VALOR DIÁRIO VR
-- Custo empresa = TOTAL × 80%
-- Desconto profissional = TOTAL × 20%
+## 📞 Suporte
 
-### ✅ Regras de Negócio
-- Exclusões aplicadas corretamente
-- Férias consideradas no cálculo
-- Desligamentos com regra proporcional
-- Valores por sindicato aplicados
+### Scripts Auxiliares Disponíveis:
+- `verificar_abas.py`: Verifica estrutura das planilhas
+- `analisar_estrutura.py`: Análise detalhada dos dados
+- `validar_resultado.py`: Validação automática dos resultados
+- `relatorio_validacoes.py`: Relatório das validações implementadas
 
-## Logs e Monitoramento
+### Informações do Sistema:
+```bash
+# Verificar versões
+python --version
+pip list
 
-O sistema fornece logs detalhados durante a execução:
-- ✅ Sucessos (carregamento de dados, processamentos)
-- ⚠️ Alertas (abas não encontradas, dados faltantes)
-- ❌ Erros (problemas críticos)
+# Testar dependências
+python -c "import pandas as pd; print(f'Pandas: {pd.__version__}')"
+python -c "import openpyxl; print(f'OpenPyXL: {openpyxl.__version__}')"
+```
 
-## Manutenção
-
-### Atualizações Mensais
-1. Substituir os arquivos na pasta "Desafio 4 - Dados" pelos dados do mês atual
-2. Executar `python sistema_vr.py`
-3. Validar com `python validar_resultado.py`
-4. Enviar `VR_MENSAL_GERADO.xlsx` para a operadora
-
-### Ajustes de Valores
-- Atualizar "Base sindicato x valor.xlsx" conforme convenções coletivas
-- Atualizar "Base dias uteis.xlsx" conforme calendário
-
-## Suporte Técnico
-
-Em caso de problemas:
-1. Verificar se todos os arquivos de entrada estão presentes
-2. Executar `python analisar_estrutura.py` para diagnosticar
-3. Verificar logs de erro no terminal
-4. Validar estrutura dos arquivos Excel de entrada
+### Contato:
+Para suporte técnico ou dúvidas sobre o sistema, consulte a documentação ou entre em contato com a equipe de desenvolvimento.
 
 ---
 
-**Sistema desenvolvido para automatizar o processo de compra de VR, garantindo precisão, eficiência e conformidade com as regras estabelecidas.**
+**📊 Sistema desenvolvido para automatizar o processo de compra de VR, garantindo precisão, eficiência e conformidade com as regras estabelecidas.**
+
+*Última atualização: Janeiro 2025*
